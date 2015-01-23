@@ -119,6 +119,19 @@ class Messages{
 
     }
 	
+	static function imageAdd(){
+		if($_POST['image'] and $_POST['name']){
+			$imageDirectory = "/var/www/phplist/content/c/";
+			$dest = tempnam($imageDirectory,date("ymd_his_"));
+			$pi = pathinfo($_POST['name']);
+			$dest.= '.'.$pi['extension'];
+			file_put_contents($dest,base64_decode($_POST['image']));
+			$response = new Response();
+			$response->setData('Filename', basename($dest));
+			$response->output();
+		}
+	}
+
 	static function formtokenGet(){
 		$key = md5(time().mt_rand(0,10000));
 		Sql_Query(sprintf('insert into %s (adminid,value,entered,expires) values(%d,"%s",%d,date_add(now(),interval 1 hour))',
